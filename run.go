@@ -17,10 +17,11 @@ var cache = struct {
 	body   map[string][]byte
 }{header: make(map[string]map[string]string), body: make(map[string][]byte)}
 
-var CacheURL string
+var CacheURL, Port string
 
 func init() {
 	flag.StringVar(&CacheURL, "url", "", "set URL to be cached")
+	flag.StringVar(&Port, "port", "8001", "port to use")
 	flag.Parse()
 }
 
@@ -32,9 +33,9 @@ func main() {
 	if string(CacheURL[len(CacheURL)-1]) != "/" {
 		CacheURL = CacheURL + "/"
 	}
-	fmt.Printf("Caching data on %s", CacheURL)
+	fmt.Printf("Caching data on %s and proxying on %s\n", CacheURL, Port)
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8001", nil)
+	http.ListenAndServe(":"+Port, nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
